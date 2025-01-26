@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Additional custom CSS */
+        .cart-item {
+            margin-bottom: 20px;
+        }
+        .cart-item img {
+            max-width: 100px;
+            max-height: 100px;
+            margin-right: 20px;
+        }
+        .remove-btn, .clear-cart-btn {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Shopping Cart</h1>
+        {% if cart_items %}
+            <div class="row">
+                {% for item in cart_items %}
+                    <div class="col-md-12 cart-item">
+                        <div class="card">
+                            <div class="card-body d-flex align-items-center">
+                                {% if item['type'] == 'equipment' %}
+                                    <img src="{{ url_for('static', filename='uploads/' + item['data'][5]) }}" alt="Product Image">
+                                    <div class="product-details">
+                                        <h5 class="card-title">{{ item['data'][1] }}</h5>
+                                        <p class="card-text">Code: {{ item['data'][2] }}</p>
+                                        <p class="card-text">Price: {{ item['data'][3] }}</p>
+                                        <p class="card-text">Description: {{ item['data'][4] }}</p>
+                                    </div>
+                                {% elif item['type'] == 'pesticide' %}
+                                    <img src="{{ url_for('static', filename='uploads/' + item['data'][5]) }}" alt="Product Image">
+                                    <div class="product-details">
+                                        <h5 class="card-title">{{ item['data'][1] }}</h5>
+                                        <p class="card-text">Code: {{ item['data'][2] }}</p>
+                                        <p class="card-text">Price: {{ item['data'][3] }}</p>
+                                        <p class="card-text">Description: {{ item['data'][4] }}</p>
+                                    </div>
+                                {% endif %}
+                                <form action="{{ url_for('remove_from_cart', product_code=item['data'][2]) }}" method="post" class="ml-auto">
+                                    <button type="submit" class="btn btn-danger remove-btn">Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <!-- Clear Cart Button -->
+                <div class="col-md-12">
+                    <form action="{{ url_for('clear_cart') }}" method="post">
+                        <button type="submit" class="btn btn-warning clear-cart-btn">Clear Cart</button>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>    
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ea; /* light green background color */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .form-container {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #fff;
+            width: 1000px;
+            margin: 0 auto; /* Center the container horizontally */
+        }
+        .vh-100 {
+            display: flex;
+            justify-content: center; /* Align horizontal */
+            align-items: center; /* Align vertical */
+        }
+    </style>
+    <script>
+        setTimeout(function() {
+            document.getElementById("flash-message").style.display = "none";
+        }, 5000);
+    </script>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script> 
+    <div class="container vh-100">
+        <div class="form-container">
+            <a class="navbar-brand" href="{{url_for('index')}}">
+                <img src="{{ url_for('static', filename='logo/kisanmitra.png') }}" alt="Logo" style="display: block; margin: 0 auto; max-width: 200px;">
+            </a>
+            <h2 style="text-align:center;">Add Equipment</h2>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div id="flash-message" class="alert alert-info">
+                    {{ messages|join}}<br>
+                </div>
+            {% endif %}
+            {% endwith %}
+            <form method="post" action="{{ url_for('addequipment') }}" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="product_name">Equipment Name:</label>
+                    <input type="text" class="form-control" id="product_name" name="product_name">
+                </div>
+                <div class="form-group">
+                    <label for="code">Code:</label>
+                    <input type="text" class="form-control" id="code" name="code">
+                </div>
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="text" class="form-control" id="price" name="price">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea class="form-control" id="description" name="description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="image">Equipment Image:</label>
+                    <input type="file" class="form-control-file" id="image" name="image">
+                </div>
+                <br>
+                <div class="d-flex justify-content-center gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary" name="action" value="submit">Submit</button>
+                    <button type="submit" class="btn btn-danger" name="action" value="delete">Delete</button>
+                    <a class="btn btn-primary" style="font-family: Calibri;" href="{{ url_for('admin') }}">Admin</a>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</body>
+</html>
