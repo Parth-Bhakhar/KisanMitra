@@ -5,10 +5,6 @@ import os
 
 app = Flask(__name__)
 
-# Twilio credentials (replace with your actual Twilio credentials)
-account_sid = "ACfa186fc6fe8d62e038bd50b3546822b1"
-auth_token = "f2326e3d755f7528d05f223a89dc72a8"
-twilio_phone_number = "+12015590637"
 
 client = Client(account_sid, auth_token)
 
