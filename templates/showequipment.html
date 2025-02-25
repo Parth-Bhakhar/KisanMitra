@@ -82,7 +82,7 @@
       .Description {
         font-size: 16px;
         color: #666; /* Example color */
-        text-align: justify;
+        text-align: center;
         margin: 10px 10px; /* Example margin */
       }
       #blue-text {
@@ -134,7 +134,6 @@
       </div>
     </div>
   </nav>   
-  <a href="#" class="blue-text text-decoration-none"><i class="bi bi-caret-left-fill"></i> Back To Equipment Page</a>
  <!-- Product -->
  <div class="container">
   <a class="btn btn-primary" style="font-family: Calibri;" href="{{ url_for('cart') }}">Cart</a>
@@ -143,28 +142,26 @@
   <!-- Adjust to check for starting a new row every set of 3 products -->
   {% if loop.index % 3 == 1 %}
   <div class="row">
-  {% endif %}
-    <div class="col-md-4 col-sm-6">
-      <section class="panel">
+  {% endif %}  
+  <div class="col-md-4 col-sm-6">
+    <section class="panel">
         <div class="pro-img-box">
-            <!-- Add to Cart button -->
-          <form method="post" action="{{ url_for('add_to_cart', product_code=row[2]) }}">
-              <button type="submit" class="adtocart"> <i class="fa fa-shopping-cart"></i></button>
-          </form>                
-          <img src="{{ url_for('static', filename='uploads/' + row[5]) }}" alt="Product Image" style="height:220px;">
+            <img src="{{ url_for('static', filename='uploads/' + row[5]) }}" alt="Product Image" style="height:220px;">
+            <!-- Corrected Form -->
+            <form method="post" action="{{ url_for('add_to_cart', product_type='equipment', product_code=row[2]) }}">
+                <button type="submit" class="adtocart">
+                    <i class="fa fa-shopping-cart"></i>
+                </button>
+            </form>
         </div>
-        <!-- Product Details -->
         <div class="panel-body text-center">
-            <h4>
-                <!-- Product Title. Replace with your actual product title. -->
-                <a href="#" class="pro-title">{{ row[1] }}</a>
-            </h4>
-            <!-- Product Price. Replace with your actual product price. -->
+            <h4><a class="pro-title">{{ row[1] }}</a></h4>
             <p class="price">{{ row[3] }}</p>
             <p class="Description">{{ row[4] }}</p>
         </div>
-      </section>
-    </div>
+    </section>
+</div>
+
   {% if loop.index % 3 == 0 %}
   </div>
   {% endif %}

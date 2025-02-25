@@ -14,6 +14,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'Parth-02052004'
 app.config['MYSQL_DB'] = 'kisanmitra'
+app.config['PORT'] = 3306
 
 mysql = MySQL(app)
 @app.route('/')
@@ -163,6 +164,7 @@ def login():
                 if users:
                     # Save user details in session
                     session['user_email'] = email
+            
                     if email == 'superuser@gmail.com':
                         return redirect(url_for('admin'))
                     else:
@@ -329,12 +331,12 @@ def showequipment():
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM equipments")
         equipment_data = cur.fetchall()
-        cur.close()
 
         for equipment in equipment_data:
             print("Equipment Image Path:", equipment[5])
 
         return render_template('showequipment.html', equipment_data=equipment_data)
+    
     except Exception as e:
         print(f"An exception occurred: {e}")
         flash('Failed to fetch equipment data.')
@@ -361,10 +363,12 @@ def showpesticide():
 
     return render_template('showpesticide.html', pesticides=[])
 
+
 @app.route('/add_to_cart/<string:product_type>/<string:product_code>', methods=['POST'])
 def add_to_cart(product_type, product_code):
     try:
-        # Fetch product data from the database based on the product_code
+        print(f"Adding to cart: {product_type} - {product_code}")
+
         cur = mysql.connection.cursor()
         if product_type == 'equipment':
             cur.execute("SELECT * FROM equipments WHERE code = %s", (product_code,))
@@ -377,43 +381,41 @@ def add_to_cart(product_type, product_code):
         product = cur.fetchone()
         cur.close()
 
-        # Check if the 'cart' key is already in the session, if not, initialize it
+        if not product:
+            flash('Product not found.')
+            return redirect(url_for('showequipment'))
+
         if 'cart' not in session:
             session['cart'] = []
 
-        # Add the product to the cart (for simplicity, we're storing the entire product dictionary)
-        session['cart'].append({'type': product_type, 'data': product})
+        cart_items = session['cart']  # Assign session to a local variable
+        cart_items.append({'type': product_type, 'data': product})  # Append product
+        session['cart'] = cart_items  # Reassign updated list to session
+        session.modified = True  # Ensure session updates
+
+        print(f"Updated cart: {session['cart']}")  # Debugging
+
         flash('Product added to cart successfully')
 
-
     except Exception as e:
-        print(f"An exception occurred: {e}")
+        print(f"Error: {e}")
         flash('Failed to add product to cart.')
 
-    if product_type == 'equipment':
-        return redirect(url_for('showequipment'))
-    elif product_type == 'pesticide':
-        return redirect(url_for('showpesticide'))
-    else:
-        return redirect(url_for('showequipment'))
+    return redirect(url_for('showequipment' if product_type == 'equipment' else 'showpesticide'))
+
 
 
 # Route to display the cart content
 @app.route('/cart')
 def cart():
     try:
-        # Check if the 'cart' key is in the session
-        if 'cart' in session:
-            cart_items = session['cart']
-        else:
-            cart_items = []
-
+        cart_items = session.get('cart', [])
+        print(f"Cart Items: {cart_items}")  # Debugging output
         return render_template('cart.html', cart_items=cart_items)
-
     except Exception as e:
         print(f"An exception occurred: {e}")
         flash('Failed to fetch cart data.')
-
     return render_template('cart.html', cart_items=[])
+
 if __name__ == '__main__':
     app.run(debug=True)
